@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import static com.latamnews.config.RabbitMqConfig.NOTIFICATION_QUEUE;
@@ -20,7 +21,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final MockAuthenticationFacade auth;
-    private final RabbitTemplate rabbitTemplate;
+    private final ObjectProvider<RabbitTemplate> rabbitTemplateProvider;
 
     public List<NotificationHistoryResponse> history() {
         return notificationRepository.findTop50ByUserIdOrderByCreatedAtDesc(auth.currentUserId()).stream()
@@ -44,7 +45,10 @@ public class NotificationService {
                     notification.setStatus(Notification.Status.PENDING);
                     notification.setCreatedAt(LocalDateTime.now());
                     Notification saved = notificationRepository.save(notification);
-                    rabbitTemplate.convertAndSend(NOTIFICATION_QUEUE, "notification:" + saved.getId());
+                    RabbitTemplate rabbitTemplate = rabbitTemplateProvider.getIfAvailable();
+                    if (rabbitTemplate != null) {
+                        rabbitTemplate.convertAndSend(NOTIFICATION_QUEUE, "notification:" + saved.getId());
+                    }
                 });
     }
 }

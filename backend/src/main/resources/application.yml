@@ -29,6 +29,8 @@ server:
 app:
   redis:
     enabled: ${APP_REDIS_ENABLED:false}
+  rabbitmq:
+    enabled: ${APP_RABBITMQ_ENABLED:false}
   auth:
     jwt-secret: ${JWT_SECRET:change-me-before-production}
   firebase:
