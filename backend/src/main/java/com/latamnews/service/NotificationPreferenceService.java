@@ -17,14 +17,14 @@ public class NotificationPreferenceService {
     private final MockAuthenticationFacade auth;
 
     public NotificationPreferenceResponse getCurrentSettings() {
-        NotificationPreference preference = repository.findByUserId(auth.currentUserId());
-        User user = userRepository.findById(auth.currentUserId()).orElseThrow();
+        User user = ensureCurrentUser();
+        NotificationPreference preference = ensurePreference(user);
         return toResponse(user, preference);
     }
 
     public NotificationPreferenceResponse update(NotificationPreferenceRequest request) {
-        NotificationPreference preference = repository.findByUserId(auth.currentUserId());
-        User user = userRepository.findById(auth.currentUserId()).orElseThrow();
+        User user = ensureCurrentUser();
+        NotificationPreference preference = ensurePreference(user);
         user.setLocale(request.locale());
         user.setTimezone(request.timezone());
         userRepository.save(user);
@@ -34,6 +34,35 @@ public class NotificationPreferenceService {
         preference.setDigestMode(request.digestMode());
         repository.save(preference);
         return toResponse(user, preference);
+    }
+
+    private User ensureCurrentUser() {
+        return userRepository.findById(auth.currentUserId()).orElseGet(() -> {
+            User user = new User();
+            user.setGoogleSub("demo-user");
+            user.setEmail("demo@latamnews.local");
+            user.setDisplayName("Demo User");
+            user.setLocale("es-MX");
+            user.setCountryCode("MX");
+            user.setTimezone("America/Mexico_City");
+            return userRepository.save(user);
+        });
+    }
+
+    private NotificationPreference ensurePreference(User user) {
+        NotificationPreference preference = repository.findByUserId(user.getId());
+        if (preference != null) {
+            return preference;
+        }
+
+        NotificationPreference created = new NotificationPreference();
+        created.setUser(user);
+        created.setQuietHoursStart("22:00");
+        created.setQuietHoursEnd("07:00");
+        created.setMaxPushPerDay(10);
+        created.setDigestMode(NotificationPreference.DigestMode.REALTIME);
+        created.setNotificationsEnabled(true);
+        return repository.save(created);
     }
 
     private NotificationPreferenceResponse toResponse(User user, NotificationPreference preference) {
