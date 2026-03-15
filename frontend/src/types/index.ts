@@ -7,6 +7,12 @@ export type Subscription = {
   heatLevel: string;
 };
 
+export type CreateSubscriptionPayload = {
+  topic: string;
+  locale: string;
+  countryCode: string;
+};
+
 export type NewsArticle = {
   id: number;
   title: string;

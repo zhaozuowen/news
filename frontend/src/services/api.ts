@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { NewsArticle, NotificationHistoryItem, NotificationSettings, Subscription } from '../types';
+import type { CreateSubscriptionPayload, NewsArticle, NotificationHistoryItem, NotificationSettings, Subscription } from '../types';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api'
@@ -7,6 +7,11 @@ const api = axios.create({
 
 export const fetchSubscriptions = async (): Promise<Subscription[]> => {
   const { data } = await api.get('/subscriptions');
+  return data;
+};
+
+export const createSubscription = async (payload: CreateSubscriptionPayload): Promise<Subscription> => {
+  const { data } = await api.post('/subscriptions', payload);
   return data;
 };
 
