@@ -27,6 +27,8 @@ server:
   port: ${PORT:8080}
 
 app:
+  redis:
+    enabled: ${APP_REDIS_ENABLED:false}
   auth:
     jwt-secret: ${JWT_SECRET:change-me-before-production}
   firebase:
