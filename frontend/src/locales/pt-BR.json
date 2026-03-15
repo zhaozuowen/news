@@ -1,0 +1,22 @@
+{
+  "appName": "LATAM News Push",
+  "login": "Entrar",
+  "loginPlaceholder": "Integração com Google Login pendente no MVP",
+  "subscriptions": "Assinaturas",
+  "news": "Notícias",
+  "history": "Histórico de notificações",
+  "settings": "Configurações",
+  "save": "Salvar",
+  "locale": "Idioma",
+  "quietHours": "Horário silencioso",
+  "frequency": "Frequência",
+  "addSubscription": "Adicionar assinatura",
+  "topic": "Tópico",
+  "country": "País",
+  "status": "Status",
+  "source": "Fonte",
+  "publishedAt": "Publicado em",
+  "markRead": "Marcar como lida",
+  "notificationsEnabled": "Notificações ativas",
+  "welcome": "Painel MVP para notícias locais da América Latina"
+}

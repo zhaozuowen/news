@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: latam-news-push-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/latam_news}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+server:
+  port: 8080
+
+app:
+  auth:
+    jwt-secret: ${JWT_SECRET:change-me-before-production}
+  firebase:
+    enabled: ${FIREBASE_ENABLED:false}
+    service-account-path: ${FIREBASE_SERVICE_ACCOUNT:}
+  rss:
+    fetch-enabled: ${RSS_FETCH_ENABLED:true}
+    default-sources:
+      - countryCode: MX
+        name: El Universal MX
+        language: es-MX
+        url: https://www.eluniversal.com.mx/rss.xml
+      - countryCode: BR
+        name: G1 Brasil
+        language: pt-BR
+        url: https://g1.globo.com/rss/g1/
+      - countryCode: AR
+        name: La Nación Argentina
+        language: es-AR
+        url: https://www.lanacion.com.ar/arc/outboundfeeds/rss/
