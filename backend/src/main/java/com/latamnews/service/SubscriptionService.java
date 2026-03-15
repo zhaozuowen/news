@@ -29,7 +29,7 @@ public class SubscriptionService {
     }
 
     public SubscriptionResponse createSubscription(SubscriptionRequest request) {
-        User user = userRepository.findById(auth.currentUserId()).orElseThrow();
+        User user = ensureCurrentUser(request.locale(), request.countryCode());
         String normalized = normalize(request.topic());
         Topic topic = topicRepository.findByNormalizedText(normalized).orElseGet(() -> {
             Topic created = new Topic();
@@ -61,6 +61,21 @@ public class SubscriptionService {
         Topic topic = subscription.getTopic();
         return new SubscriptionResponse(subscription.getId(), topic.getRawText(), topic.getLocale(), topic.getCountryCode(),
                 subscription.getNotificationEnabled(), topic.getHeatLevel().name());
+    }
+
+    private User ensureCurrentUser(String locale, String countryCode) {
+        return userRepository.findById(auth.currentUserId()).orElseGet(() -> {
+            User user = new User();
+            user.setGoogleSub("demo-user");
+            user.setEmail("demo@latamnews.local");
+            user.setDisplayName("Demo User");
+            user.setLocale(locale);
+            user.setCountryCode(countryCode);
+            user.setTimezone("America/Mexico_City");
+            user.setCreatedAt(LocalDateTime.now());
+            user.setUpdatedAt(LocalDateTime.now());
+            return userRepository.save(user);
+        });
     }
 
     private String normalize(String text) {
