@@ -65,10 +65,10 @@ public class SubscriptionService {
 
     private String normalize(String text) {
         return Normalizer.normalize(text, Normalizer.Form.NFD)
-                .replaceAll("\p{M}", "")
-                .replaceAll("[^\p{IsAlphabetic}\p{IsDigit}\s]", " ")
+                .replaceAll("\\p{M}", "")
+                .replaceAll("[^\\p{IsAlphabetic}\\p{IsDigit}\\s]", " ")
                 .trim()
-                .replaceAll("\s+", " ")
+                .replaceAll("\\s+", " ")
                 .toLowerCase();
     }
 
